@@ -25,7 +25,8 @@ public class Main {
             String username = objReader.readLine();
             System.out.println("Input Password:");
             String password = objReader.readLine();
-
+            //TODO use username and password to connect to database client
+            //TODO initialize spring
         } catch (IOException e) {
 
             e.printStackTrace();
