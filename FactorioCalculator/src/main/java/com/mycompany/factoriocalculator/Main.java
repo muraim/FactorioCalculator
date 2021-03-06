@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.mycompany.factoriocalculator;
+import com.mongodb.MongoSecurityException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,11 +31,11 @@ public class Main {
             System.out.println("Input Password:");
             String password = objReader.readLine();
             //TODO use username and password to connect to database client
+            DatabaseClient client = new DatabaseClient(username, password);
+
             //TODO initialize spring
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
+        } catch (IOException | MongoSecurityException e) {
+            System.out.println("ERROR Connecting to Database");
         } finally {
 
             try {
