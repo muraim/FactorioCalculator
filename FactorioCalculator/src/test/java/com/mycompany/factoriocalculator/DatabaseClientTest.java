@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
 
 /**
  * Unit tests for DatabaseClient
+ *
  * @author Matthew
  */
 public class DatabaseClientTest {
@@ -41,11 +42,16 @@ public class DatabaseClientTest {
 
     @Test
     public void testQueryByName() {
-        System.out.println("testClient is null? " + testClient == null);
         Document result
                 = testClient.queryByName("test-item", RESOURCE_COLLECTION_NAME);
         assertEquals("test-item", result.get("name"));
+    }
 
+    @Test
+    public void testQueryByName_wrongName() {
+        Document result
+                = testClient.queryByName("wrong-item", RESOURCE_COLLECTION_NAME);
+        assertEquals(null, result);
     }
 
     private void insertResource(Map<String, Object> fields) {
