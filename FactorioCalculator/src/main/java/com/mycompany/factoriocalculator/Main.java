@@ -23,6 +23,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
         BufferedReader objReader = null;
         try {
             objReader = new BufferedReader(new InputStreamReader(System.in));
@@ -32,7 +33,6 @@ public class Main {
             String password = objReader.readLine();
             //TODO use username and password to connect to database client
             DatabaseClient client = new DatabaseClient(username, password);
-
             //TODO initialize spring
         } catch (IOException | MongoSecurityException e) {
             System.out.println("ERROR Connecting to Database");

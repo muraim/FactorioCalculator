@@ -21,10 +21,8 @@ public class DatabaseClient {
     private static final String CLUSTER_URL
             = "@cluster0.ldu8s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
     private static final String DATABASE_NAME = "FactorioData";
-    private static final String RESOURCE_COLLECTION_NAME = "Resources";
     private MongoClient mongoClient;
     private MongoDatabase database;
-    private MongoCollection<Document> resources;
 
     public DatabaseClient(String connUser, String connPass) {
         connectToDatabase(connUser, connPass);
@@ -36,6 +34,15 @@ public class DatabaseClient {
         mongoClient = MongoClients.create("mongodb+srv://" + connectionUser
                 + ":" + connectionPass + CLUSTER_URL);
         database = mongoClient.getDatabase(DATABASE_NAME);
-        resources = database.getCollection(RESOURCE_COLLECTION_NAME);
+    }
+    
+    public Document queryByName(String name, String collectionName){
+       MongoCollection<Document> collection = getCollection(collectionName);
+       return collection.find(new Document("name", name)).first();
+    }
+    
+    // Visible for testing
+    public MongoCollection<Document> getCollection(String collectionName){
+         return database.getCollection(collectionName);
     }
 }
