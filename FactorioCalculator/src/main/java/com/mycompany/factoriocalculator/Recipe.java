@@ -26,11 +26,15 @@ public class Recipe {
         name = (String) recipeDocument.get("name");
         displayName = (String) recipeDocument.get("display_name");
         category = (String) recipeDocument.get("category");
-        energyRequired = (double) recipeDocument.get("energy_required");
-        for (Resource ingredient : (Resource[]) recipeDocument.get("ingredients")) {
-            ingredients.put(ingredient.name, ingredient.amount);
+        if (recipeDocument.containsKey("normal")) {
+            parseCosts((Map<String, Object>) recipeDocument.get("normal"));
+            parseExpensiveCosts((Map<String, Object>) recipeDocument.get("expensive"));
+        } else {
+            parseCosts(recipeDocument);
+            expensiveEnergyRequired = Optional.empty();
+            expensiveIngredients = Optional.empty();
+            expensiveResults = Optional.empty();
         }
-        parseResult(recipeDocument);
     }
 
     public String getName() {
@@ -40,7 +44,7 @@ public class Recipe {
     public String getDisplayName() {
         return displayName;
     }
-    
+
     public String getCategory() {
         return category;
     }
@@ -59,7 +63,33 @@ public class Recipe {
         return resultsCopy;
     }
 
-    private void parseResult(Document recipeDocument) {
+    public Optional<Double> getExpensiveEnergyRequired() {
+        return expensiveEnergyRequired;
+    }
+
+    public Optional<Map<String, Integer>> getExpensiveIngredients() {
+        if(expensiveIngredients.isPresent()){
+            Map<String, Integer> expensiveIngredientsCopy
+                    = new HashMap<>(expensiveIngredients.get());
+            return Optional.of(expensiveIngredientsCopy);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Map<String, Integer>> getExpensiveResults() {
+        if(expensiveResults.isPresent()){
+            Map<String, Integer> expensiveResultsCopy 
+                    = new HashMap<>(expensiveResults.get());
+            return Optional.of(expensiveResultsCopy);
+        }
+        return Optional.empty();
+    }
+
+    private void parseCosts(Map<String, Object> recipeDocument) {
+        energyRequired = (double) recipeDocument.get("energy_required");
+        for (Resource ingredient : (Resource[]) recipeDocument.get("ingredients")) {
+            ingredients.put(ingredient.name, ingredient.amount);
+        }
         if (recipeDocument.containsKey("result")) {
             Resource result = (Resource) recipeDocument.get("result");
             results.put(result.name, result.amount);
@@ -69,17 +99,38 @@ public class Recipe {
             }
         }
     }
-    
+
+    private void parseExpensiveCosts(Map<String, Object> recipeDocument) {
+        expensiveEnergyRequired 
+                = Optional.of((double) recipeDocument.get("energy_required"));
+        Map<String, Integer> ingredientMap = new HashMap<>();
+        for (Resource ingredient : (Resource[]) recipeDocument.get("ingredients")) {
+            ingredientMap.put(ingredient.name, ingredient.amount);
+        }
+        expensiveIngredients = Optional.of(ingredientMap);
+        Map<String, Integer> resultMap = new HashMap<>();
+        if (recipeDocument.containsKey("result")) {
+            Resource result = (Resource) recipeDocument.get("result");
+            resultMap.put(result.name, result.amount);
+        } else {
+            for (Resource result : (Resource[]) recipeDocument.get("results")) {
+                resultMap.put(result.name, result.amount);
+            }
+        }
+        expensiveResults = Optional.of(resultMap);
+    }
+
     // visible for testing
     public static class Resource {
 
         String name;
         int amount;
-        double probability;  
+        double probability;
 
         public Resource(String name, int amount) {
             this(name, amount, 1);
         }
+
         public Resource(String name, int amount, double probability) {
             this.name = name;
             this.amount = amount;
