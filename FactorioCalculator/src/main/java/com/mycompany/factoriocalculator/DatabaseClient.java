@@ -6,6 +6,7 @@
 package com.mycompany.factoriocalculator;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -14,6 +15,7 @@ import org.bson.Document;
 
 /**
  * Connects to Mongo Database
+ *
  * @author Matthew
  */
 public class DatabaseClient {
@@ -21,6 +23,8 @@ public class DatabaseClient {
     private static final String CLUSTER_URL
             = "@cluster0.ldu8s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
     private static final String DATABASE_NAME = "FactorioData";
+    public static final String RESOURCE_COLLECTION_NAME = "Resources";
+    public static final String BUILDING_COLLECTION_NAME = "Buildings";
     private MongoClient mongoClient;
     private MongoDatabase database;
 
@@ -35,14 +39,21 @@ public class DatabaseClient {
                 + ":" + connectionPass + CLUSTER_URL);
         database = mongoClient.getDatabase(DATABASE_NAME);
     }
-    
-    public Document queryByName(String name, String collectionName){
-       MongoCollection<Document> collection = getCollection(collectionName);
-       return collection.find(new Document("name", name)).first();
+
+    public Document queryByName(String name, String collectionName) {
+        MongoCollection<Document> collection = getCollection(collectionName);
+        return collection.find(new Document("name", name)).first();
     }
-    
+
+    public FindIterable<Document> queryByCategory(
+            String category,
+            String collectionName) {
+        MongoCollection<Document> collection = getCollection(collectionName);
+        return collection.find(new Document("category", category));
+    }
+
     // Visible for testing
-    public MongoCollection<Document> getCollection(String collectionName){
-         return database.getCollection(collectionName);
+    public MongoCollection<Document> getCollection(String collectionName) {
+        return database.getCollection(collectionName);
     }
 }

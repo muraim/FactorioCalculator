@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 package com.mycompany.factoriocalculator;
+
 import com.mongodb.MongoSecurityException;
+import com.mycompany.factoriocalculator.ResourceCalculator.RecipeParams;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +18,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
  *
  * @author Matthew
  */
-@SpringBootApplication(exclude={SecurityAutoConfiguration.class})
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class Main {
 
     /**
@@ -31,9 +33,11 @@ public class Main {
             String username = objReader.readLine();
             System.out.println("Input Password:");
             String password = objReader.readLine();
-            //TODO use username and password to connect to database client
             DatabaseClient client = new DatabaseClient(username, password);
             //TODO initialize spring
+            ResourceCalculator rc = new ResourceCalculator(client);
+            RecipeParams params = new RecipeParams();
+            System.out.println(rc.buildRecipeTree("automation-science-pack", params));
         } catch (IOException | MongoSecurityException e) {
             System.out.println("ERROR Connecting to Database");
         } finally {
@@ -48,9 +52,3 @@ public class Main {
         }
     }
 }
-
-
-
-
-  
-  

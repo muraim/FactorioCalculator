@@ -39,9 +39,9 @@ public class RecipeTest {
         assertEquals("display", testRecipe.getDisplayName());
         assertEquals("display", testExpensiveRecipe.getDisplayName());
     }
-    
+
     @Test
-    public void testGetCategory(){
+    public void testGetCategory() {
         assertEquals("basic", testRecipe.getCategory());
         assertEquals("expensive", testExpensiveRecipe.getCategory());
     }
@@ -68,7 +68,7 @@ public class RecipeTest {
                         "ingredient_3", 2);
         assertEquals(expectedIngredients, testRecipe.getIngredients());
         assertEquals(expectedIngredients, testExpensiveRecipe.getIngredients());
-        assertEquals(expensiveExpectedIngredients, 
+        assertEquals(expensiveExpectedIngredients,
                 testExpensiveRecipe.getExpensiveIngredients().get());
         assertTrue(testRecipe.getExpensiveIngredients().isEmpty());
     }
@@ -80,14 +80,14 @@ public class RecipeTest {
                         "result_1", 6,
                         "result_2", 3,
                         "result_3", 52);
-         ImmutableMap expensiveExpectedResults
+        ImmutableMap expensiveExpectedResults
                 = ImmutableMap.of(
                         "result_1", 12,
                         "result_2", 6,
-                        "result_3", 104);       
+                        "result_3", 104);
         assertEquals(expectedResults, testRecipe.getResults());
         assertEquals(expectedResults, testExpensiveRecipe.getResults());
-        assertEquals(expensiveExpectedResults, 
+        assertEquals(expensiveExpectedResults,
                 testExpensiveRecipe.getExpensiveResults().get());
         assertTrue(testRecipe.getExpensiveResults().isEmpty());
     }

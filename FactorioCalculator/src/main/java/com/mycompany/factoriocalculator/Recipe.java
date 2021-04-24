@@ -60,6 +60,10 @@ public class Recipe {
         return ingredientsCopy;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Resource> getResults() {
         List<Resource> resultsCopy = new ArrayList<>(results);
         return resultsCopy;
@@ -88,7 +92,8 @@ public class Recipe {
     }
 
     private void parseCosts(Map<String, Object> recipeDocument) {
-        energyRequired = (double) recipeDocument.get("energy_required");
+        Number nEnergyRequired = (Number) recipeDocument.get("energy_required");
+        energyRequired = nEnergyRequired.doubleValue();
         List<Document> ingredientList = (List<Document>) recipeDocument.get("ingredients");
         for (Document ingredientDocument : ingredientList) {
             ingredients.add(new Resource(ingredientDocument));
@@ -105,8 +110,8 @@ public class Recipe {
     }
 
     private void parseExpensiveCosts(Map<String, Object> recipeDocument) {
-        expensiveEnergyRequired
-                = Optional.of((double) recipeDocument.get("energy_required"));
+        Number nExEnergyRequired = (Number) recipeDocument.get("energy_required");
+        expensiveEnergyRequired = Optional.of(nExEnergyRequired.doubleValue());
         List<Resource> expensiveIngredientsList = new ArrayList<>();
         List<Document> ingredientList = (List<Document>) recipeDocument.get("ingredients");
         for (Document ingredientDocument : ingredientList) {
@@ -147,16 +152,16 @@ public class Recipe {
 
         public Resource(Document resourceDocument) {
             this.name = (String) resourceDocument.get("name");
-            this.amount = (int) resourceDocument.get("amount");
+            this.amount = ((Number) resourceDocument.get("amount")).intValue();
             if (resourceDocument.containsKey("probability")) {
-                this.probability = (double) resourceDocument.get("probability");
+                this.probability = ((Number) resourceDocument.get("probability")).doubleValue();
             } else {
                 this.probability = 1;
             }
         }
-        
+
         @Override
-        public String toString(){
+        public String toString() {
             StringBuilder writer = new StringBuilder();
             writer.append("{\"name\": ");
             writer.append("\"" + name + "\"");
